@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="EsSaludLoginWeb-impl" default="compile" basedir="..">
+    <property file="nbproject/project.properties"/>
+    <target name="init"><mkdir dir="${build.classes.dir}"/></target>
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}" destdir="${build.classes.dir}" release="${javac.release}" encoding="${source.encoding}" includeantruntime="false"/>
+        <copy todir="${build.classes.dir}/web"><fileset dir="web"/></copy>
+    </target>
+    <target name="run" depends="compile"><java classname="${main.class}" fork="true"><classpath><pathelement location="${build.classes.dir}"/></classpath><jvmarg line="${run.jvmargs}"/></java></target>
+    <target name="clean"><delete dir="${build.dir}"/></target>
+    <!-- NetBeans solicita este objetivo para Construir; esta entrega no genera JAR. -->
+    <target name="jar" depends="compile"/>
+    <target name="compile-single" depends="compile"/>
+    <target name="run-single" depends="run"/>
+</project>

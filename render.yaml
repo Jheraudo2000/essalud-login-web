@@ -3,6 +3,17 @@ services:
     name: essalud-login-web
     runtime: docker
     plan: free
-    dockerfilePath: ./Dockerfile
-    healthCheckPath: /
-    autoDeployTrigger: "off"
+    healthCheckPath: /salud
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: ESSALUD_HTTPS
+        value: "true"
+      - key: ESSALUD_DB_URL
+        sync: false
+      - key: ESSALUD_DB_USUARIO
+        sync: false
+      - key: ESSALUD_DB_CLAVE
+        sync: false
+      - key: ESSALUD_ADMIN_CLAVE
+        sync: false

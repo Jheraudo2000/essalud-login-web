@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="EsSaludLoginWeb" default="compile" basedir=".">
-    <description>Login web Java MVC con Apache Ant para Apache NetBeans.</description>
+<project name="EsSaludLoginWeb" default="dist" basedir=".">
+    <description>Aplicación web JSP de citas médicas. Java with Ant, MVC y SQL Server.</description>
     <import file="nbproject/build-impl.xml"/>
 </project>

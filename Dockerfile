@@ -1,16 +1,12 @@
-FROM eclipse-temurin:17-jdk-jammy AS build
+FROM tomcat:10.1-jdk21-temurin AS compilacion
+USER root
 RUN apt-get update && apt-get install -y --no-install-recommends ant && rm -rf /var/lib/apt/lists/*
 WORKDIR /proyecto
-COPY build.xml ./
-COPY nbproject/ ./nbproject/
-COPY src/ ./src/
-COPY web/ ./web/
-RUN ant compile
+COPY . .
+RUN ant -Dtomcat.home=/usr/local/tomcat dist
 
-FROM eclipse-temurin:17-jre-jammy
-WORKDIR /app
-COPY --from=build /proyecto/build/classes/ ./classes/
-ENV PORT=10000
-EXPOSE 10000
-USER 10001:10001
-CMD ["java", "-XX:MaxRAMPercentage=70.0", "-cp", "classes", "essalud.Aplicacion"]
+FROM tomcat:10.1-jdk21-temurin
+COPY --from=compilacion /proyecto/dist/EsSaludLoginWeb.war /usr/local/tomcat/webapps/ROOT.war
+ENV JAVA_OPTS="-Duser.timezone=America/Lima" ESSALUD_HTTPS=true
+EXPOSE 8080
+CMD ["catalina.sh", "run"]

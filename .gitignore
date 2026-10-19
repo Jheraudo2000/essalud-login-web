@@ -1,5 +1,6 @@
-build/
-dist/
-nbproject/private/
+/build/
+/dist/
+/nbproject/private/
+**/essalud-db.properties
+*.bak
 *.log
-.env

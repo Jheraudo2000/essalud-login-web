@@ -1,15 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="EsSaludLoginWeb-impl" default="compile" basedir="..">
-    <property file="nbproject/project.properties"/>
-    <target name="init"><mkdir dir="${build.classes.dir}"/></target>
-    <target name="compile" depends="init">
-        <javac srcdir="${src.dir}" destdir="${build.classes.dir}" release="${javac.release}" encoding="${source.encoding}" includeantruntime="false"/>
-        <copy todir="${build.classes.dir}/web"><fileset dir="web"/></copy>
-    </target>
-    <target name="run" depends="compile"><java classname="${main.class}" fork="true"><classpath><pathelement location="${build.classes.dir}"/></classpath><jvmarg line="${run.jvmargs}"/></java></target>
-    <target name="clean"><delete dir="${build.dir}"/></target>
-    <!-- NetBeans solicita este objetivo para Construir; esta entrega no genera JAR. -->
-    <target name="jar" depends="compile"/>
-    <target name="compile-single" depends="compile"/>
-    <target name="run-single" depends="run"/>
+<project name="EsSaludLoginWeb-impl" default="dist" basedir="..">
+ <property file="nbproject/private/private.properties"/>
+ <property file="nbproject/project.properties"/>
+ <property environment="env"/>
+ <condition property="tomcat.home" value="${env.CATALINA_HOME}"><isset property="env.CATALINA_HOME"/></condition>
+ <condition property="tomcat.home" value="${j2ee.server.home}"><isset property="j2ee.server.home"/></condition>
+ <target name="init">
+  <available file="${tomcat.home}/lib/servlet-api.jar" property="tomcat.disponible"/>
+  <fail unless="tomcat.disponible" message="Selecciona Apache Tomcat 10.1 en NetBeans o indica -Dtomcat.home=RUTA_TOMCAT al ejecutar Ant."/>
+  <available file="${file.reference.jdbc}" property="jdbc.disponible"/>
+  <fail unless="jdbc.disponible" message="Falta el controlador JDBC de SQL Server en lib."/>
+  <mkdir dir="${build.classes.dir}"/>
+ </target>
+ <target name="compile" depends="init">
+  <javac srcdir="${src.dir}" destdir="${build.classes.dir}" release="11" encoding="UTF-8" includeantruntime="false" debug="true">
+   <classpath><pathelement location="${tomcat.home}/lib/servlet-api.jar"/><pathelement location="${file.reference.jdbc}"/></classpath>
+  </javac>
+  <copy todir="${build.web.dir}"><fileset dir="${web.docbase.dir}"/></copy>
+  <copy todir="${build.web.dir}/WEB-INF/lib"><fileset dir="lib" includes="*.jar"/></copy>
+ </target>
+ <target name="dist" depends="compile"><mkdir dir="${dist.dir}"/><war destfile="${dist.war}" webxml="${web.docbase.dir}/WEB-INF/web.xml"><fileset dir="${build.web.dir}" excludes="WEB-INF/web.xml"/></war></target>
+ <target name="run" depends="dist">
+  <copy file="${file.reference.jdbc}" todir="${tomcat.home}/lib"/>
+  <copy todir="${tomcat.home}/webapps/EsSaludLoginWeb" overwrite="true"><fileset dir="${build.web.dir}"/></copy>
+  <java classname="org.apache.catalina.startup.Bootstrap" fork="true" spawn="true" dir="${tomcat.home}">
+   <classpath><pathelement location="${tomcat.home}/bin/bootstrap.jar"/><pathelement location="${tomcat.home}/bin/tomcat-juli.jar"/></classpath>
+   <jvmarg value="-Dcatalina.home=${tomcat.home}"/><jvmarg value="-Dcatalina.base=${tomcat.home}"/>
+   <jvmarg value="-Djava.util.logging.config.file=${tomcat.home}/conf/logging.properties"/>
+   <jvmarg value="-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager"/>
+   <jvmarg value="-Duser.timezone=America/Lima"/><jvmarg line="${run.jvmargs}"/>
+   <arg value="start"/>
+  </java>
+  <echo message="Tomcat iniciado. Abre /EsSaludLoginWeb en el puerto configurado del servidor."/>
+ </target>
+ <target name="stop" depends="init"><java classname="org.apache.catalina.startup.Bootstrap" fork="true"><classpath><pathelement location="${tomcat.home}/bin/bootstrap.jar"/><pathelement location="${tomcat.home}/bin/tomcat-juli.jar"/></classpath><jvmarg value="-Dcatalina.home=${tomcat.home}"/><jvmarg value="-Dcatalina.base=${tomcat.home}"/><arg value="stop"/></java></target>
+ <target name="run-deploy" depends="run"/>
+ <target name="debug" depends="run"/>
+ <target name="clean"><delete dir="${build.dir}"/><delete dir="${dist.dir}"/></target>
 </project>

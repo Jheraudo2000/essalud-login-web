@@ -1,0 +1,15 @@
+# Copiar a conf/essalud-db.properties dentro de Apache Tomcat.
+# Requisitos: JDK 11 o superior, Apache Tomcat 10.1 y SQL Server.
+# Ejecutar primero sql/01_crear_base.sql y sql/02_esquema.sql en SQL Server.
+# En un servidor público, usar TLS válido y trustServerCertificate=false.
+db.url=jdbc:sqlserver://localhost:1433;databaseName=EsSaludCitasSemana10;encrypt=true;trustServerCertificate=true
+db.usuario=essalud_app
+db.clave=
+# Alternativa para Windows: integratedSecurity=true en db.url y biblioteca nativa del driver.
+# Esa alternativa requiere mssql-jdbc_auth-13.6.0.x64.dll (paquete oficial de Microsoft),
+# accesible mediante -Djava.library.path=RUTA_A_LA_CARPETA_DE_LA_DLL.
+# En la primera ejecución con la tabla Usuarios vacía, definir ESSALUD_ADMIN_CLAVE
+# con una contraseña de 10 a 128 caracteres. El usuario inicial se llama admin.
+# Solo para cargar cuentas ficticias de prueba: ESSALUD_DEMO=true.
+# Las variables ESSALUD_DB_URL, ESSALUD_DB_USUARIO y ESSALUD_DB_CLAVE
+# permiten configurar el alojamiento sin guardar credenciales en el código.

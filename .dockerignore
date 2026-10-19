@@ -1,7 +1,5 @@
-build/
-dist/
-.git/
-nbproject/private/
-*.zip
+build
+dist
+nbproject/private
+*.bak
 *.log
-.env

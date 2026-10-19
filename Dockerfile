@@ -6,6 +6,7 @@ COPY . .
 RUN ant -Dtomcat.home=/usr/local/tomcat dist
 
 FROM tomcat:10.1-jdk21-temurin
+RUN sed -i 's/<Server port="8005"/<Server port="-1"/' "$CATALINA_HOME/conf/server.xml"
 COPY --from=compilacion /proyecto/dist/EsSaludLoginWeb.war /usr/local/tomcat/webapps/ROOT.war
 ENV JAVA_OPTS="-Duser.timezone=America/Lima" ESSALUD_HTTPS=true
 EXPOSE 8080

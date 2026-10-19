@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
+    <Loader delegate="true"/>
+    <CookieProcessor sameSiteCookies="strict"/>
     <!-- Tomcat administra las conexiones; las credenciales vienen del alojamiento. -->
     <Resource name="jdbc/EsSaludCitas" auth="Container" type="javax.sql.DataSource"
               factory="org.apache.tomcat.dbcp.dbcp2.BasicDataSourceFactory"

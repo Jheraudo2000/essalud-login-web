@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <!-- Tomcat administra las conexiones; las credenciales vienen del alojamiento. -->
+    <Resource name="jdbc/EsSaludCitas" auth="Container" type="javax.sql.DataSource"
+              factory="org.apache.tomcat.dbcp.dbcp2.BasicDataSourceFactory"
+              driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+              url="${ESSALUD_DB_URL}" username="${ESSALUD_DB_USUARIO}" password="${ESSALUD_DB_CLAVE}"
+              maxTotal="6" maxIdle="3" minIdle="0" maxWaitMillis="20000"
+              defaultAutoCommit="true" rollbackOnReturn="true" enableAutoCommitOnReturn="true"
+              testOnBorrow="true" testWhileIdle="true" validationQuery="SELECT 1" validationQueryTimeout="5"
+              timeBetweenEvictionRunsMillis="30000" minEvictableIdleTimeMillis="30000"
+              closeMethod="close"/>
+</Context>

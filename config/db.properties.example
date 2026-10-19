@@ -13,3 +13,5 @@ db.clave=
 # Solo para cargar cuentas ficticias de prueba: ESSALUD_DEMO=true.
 # Las variables ESSALUD_DB_URL, ESSALUD_DB_USUARIO y ESSALUD_DB_CLAVE
 # permiten configurar el alojamiento sin guardar credenciales en el código.
+# La imagen Docker activa ESSALUD_POOL=true para reutilizar conexiones con el
+# DataSource JNDI de Tomcat definido en config/context-render.xml.

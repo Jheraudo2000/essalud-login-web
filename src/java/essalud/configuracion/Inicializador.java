@@ -17,23 +17,30 @@ public final class Inicializador implements ServletContextListener {
         try {
             if(Sql.entero(Sql.consultar("SELECT COUNT(*) n FROM Usuarios").get(0).get("n"))==0) {
                 boolean demo="true".equalsIgnoreCase(System.getenv("ESSALUD_DEMO"));
-                String clave=System.getenv("ESSALUD_ADMIN_CLAVE");
-                if(!demo&&(clave==null||clave.isEmpty()))throw new IllegalStateException("Define ESSALUD_ADMIN_CLAVE para crear el administrador inicial.");
+                String clave=claveInicial("ESSALUD_ADMIN_CLAVE");
+                String claveOperador=demo?claveInicial("ESSALUD_OPERADOR_CLAVE"):"";
+                String claveMedico=demo?claveInicial("ESSALUD_MEDICO_CLAVE"):"";
+                String clavePaciente=demo?claveInicial("ESSALUD_PACIENTE_CLAVE"):"";
                 // La auditoría del primer administrador admite el autor nulo, sin inventar un ID existente.
-                Map<String,String> f=datos("admin","Andrea","Ejemplo","90000001","1",demo?"Admin2026!":clave);
+                Map<String,String> f=datos("admin","Andrea","Ejemplo","90000001","1",clave);
                 int admin=crearInicial(f);
                 if(demo) {
                     Administrador autor=new Administrador(admin,"admin","Andrea Ejemplo",false,true);
                     UsuarioRepositoryJdbc repo=new UsuarioRepositoryJdbc();
-                    repo.guardar(datos("operador","Camila","Ejemplo","90000002","2","Operador2026!"),autor);
-                    int medico=repo.guardar(datos("medico","Daniel","Ejemplo","90000003","3","Medico2026!"),autor);
-                    repo.guardar(datos("paciente","Alex","Ejemplo","90000004","4","Paciente2026!"),autor);
+                    repo.guardar(datos("operador","Camila","Ejemplo","90000002","2",claveOperador),autor);
+                    int medico=repo.guardar(datos("medico","Daniel","Ejemplo","90000003","3",claveMedico),autor);
+                    repo.guardar(datos("paciente","Alex","Ejemplo","90000004","4",clavePaciente),autor);
                     Map<String,String> m=new LinkedHashMap<>();m.put("idUsuario",String.valueOf(medico));m.put("cmp","90001");m.put("idEspecialidad","1");m.put("idEstablecimiento","1");
                     new CatalogoRepository().guardar("medicos",m,autor);
                 }
             }
             evento.getServletContext().setAttribute("bdLista",true);
         } catch(Exception e){evento.getServletContext().log("No se pudo preparar la base del portal",e);evento.getServletContext().setAttribute("bdLista",false);}
+    }
+    private String claveInicial(String variable) {
+        String clave=System.getenv(variable);
+        if(clave==null||clave.isEmpty())throw new IllegalStateException("Define "+variable+" para crear las cuentas iniciales.");
+        return clave;
     }
     private int crearInicial(Map<String,String> f) throws SQLException {
         try(Connection c=ConexionBD.getInstancia().getConexion()) {

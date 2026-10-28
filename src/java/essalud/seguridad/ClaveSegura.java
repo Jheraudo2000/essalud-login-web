@@ -19,7 +19,7 @@ public final class ClaveSegura {
         finally { spec.clearPassword(); Arrays.fill(caracteres,'\0'); }
     }
     public static String generar(String clave) {
-        if(clave==null||clave.length()<10||clave.length()>128) throw new IllegalArgumentException("La contraseña debe tener entre 10 y 128 caracteres.");
+        if(clave==null||clave.length()<6||clave.length()>128) throw new IllegalArgumentException("La contraseña debe tener entre 6 y 128 caracteres.");
         byte[] sal=new byte[16]; new SecureRandom().nextBytes(sal);
         return "pbkdf2_sha256$"+ITERACIONES+"$"+Base64.getEncoder().encodeToString(sal)+"$"+Base64.getEncoder().encodeToString(derivar(clave,sal,ITERACIONES));
     }
